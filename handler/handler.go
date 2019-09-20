@@ -1,17 +1,17 @@
 package handler
 
 import (
-	"net/http"
-	"io/ioutil"
-	"io"
-	"log"
-	"os"
-	"file_store/meta"
-	"time"
-	"file_store/util"
-	"github.com/gin-gonic/gin/json"
+	"encoding/json"
 	"file_store/const"
+	"file_store/meta"
+	"file_store/util"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
 	"strconv"
+	"time"
 )
 
 const (
