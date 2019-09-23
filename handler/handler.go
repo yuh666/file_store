@@ -18,6 +18,10 @@ const (
 	defaultPath = "/tmp"
 )
 
+type Result struct {
+	Data interface{} `json:"data"`
+}
+
 func UploadHandler(writer http.ResponseWriter, request *http.Request) {
 	request.ParseForm()
 	if request.Method == "GET" {

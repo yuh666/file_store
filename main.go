@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
 	"file_store/handler"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -22,6 +22,13 @@ func main() {
 	http.HandleFunc("/file/modify", handler.ModifyFileHandler)
 	//delete
 	http.HandleFunc("/file/delete", handler.DeleteFileHandler)
+
+	//user/register
+	http.HandleFunc("/user/signup", handler.RegisterUserHandler)
+	http.HandleFunc("/user/signin", handler.LoginHandler)
+
+	//file
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
 	log.Fatalln(http.ListenAndServe(":7771", nil))
 
