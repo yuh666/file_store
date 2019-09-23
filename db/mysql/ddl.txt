@@ -11,3 +11,39 @@ CREATE TABLE `tbl_file` (
   UNIQUE KEY `idx_file_hash` (`file_sha1`),
   KEY `idx_status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+create table tbl_user
+(
+    id             int(11)     NOT NULL AUTO_INCREMENT,
+    user_name      varchar(64) NOT NULL DEFAULT '' COMMENT '用户名',
+    user_pwd       varchar(64) NOT NULL DEFAULT '' COMMENT '密码',
+    phone          char(11)    NOT NULL DEFAULT '',
+    email          varchar(64) NOT NULL DEFAULT '',
+    phone_validate tinyint(1)  NOT NULL DEFAULT '0' COMMENT '0 未验证 1 已验证',
+    email_validate tinyint(1)  NOT NULL DEFAULT '0' COMMENT '0 未验证 1 已验证',
+    sign_at        datetime    NOT NULL DEFAULT current_timestamp COMMENT '注册时间',
+    last_active    datetime    NOT NULL DEFAULT current_timestamp ON UPDATE current_timestamp COMMENT '最后活跃时间',
+    profile        text COMMENT '用户信息',
+    status         int(11)     NOT NULL DEFAULT '1' COMMENT '0 无效 1 有效',
+    create_at      datetime    NOT NULL DEFAULT current_timestamp COMMENT '创建时间',
+    update_at      datetime    NOT NULL DEFAULT current_timestamp ON UPDATE current_timestamp COMMENT '修改时间',
+    primary key (id),
+    unique key idx_phone (phone),
+    key idx_status (status)
+
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 5
+  DEFAULT CHARSET = utf8mb4;
+
+create table tbl_token
+(
+    id        int(11)     NOT NULL AUTO_INCREMENT,
+    user_name varchar(64) NOT NULL DEFAULT '' COMMENT '用户名',
+    token     char(40)    NOT NULL DEFAULT '' COMMENT 'token',
+    create_at datetime    NOT NULL DEFAULT current_timestamp COMMENT '创建时间',
+    update_at datetime    NOT NULL DEFAULT current_timestamp ON UPDATE current_timestamp COMMENT '修改时间',
+    primary key (id),
+    unique key idx_token (token)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 5
+  DEFAULT CHARSET = utf8mb4;
