@@ -9,11 +9,11 @@ func Insert(username, passwd string) bool {
 	if err != nil {
 		return false
 	}
+	defer stmt.Close()
 	_, err = stmt.Exec(username, passwd)
 	if err != nil {
 		return false
 	}
-	defer stmt.Close()
 	return true
 }
 
@@ -68,10 +68,10 @@ func UpdateToken(username, token string) bool {
 	if err != nil {
 		return false
 	}
+	defer stmt.Close()
 	_, err = stmt.Exec(username, token)
 	if err != nil {
 		return false
 	}
-	defer stmt.Close()
 	return true
 }
