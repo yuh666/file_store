@@ -66,12 +66,15 @@
 
 <script lang="javascript">
     window.onload = function () {
-        var username = document.getElementById('username');
         $.ajax({
-            url: "/user/info?" + queryParams(),
+            url: "/user/info",
             type: "POST",
             error: function (err) {
                 alert(err);
+            },
+            data:{
+                "token":localStorage.getItem("token"),
+                "username":localStorage.getItem("username")
             },
             success: function (body) {
                 var resp = JSON.parse(body);
@@ -127,6 +130,11 @@
 
     function toUploadFile() {
         window.location.href = '/file/upload?' + queryParams();
+    }
+
+
+    function queryParams() {
+        return "token=" + localStorage.getItem("token")
     }
 
 </script>

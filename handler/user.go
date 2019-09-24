@@ -60,7 +60,24 @@ func LoginHandler(writer http.ResponseWriter, request *http.Request) {
 	m["Token"] = token
 	m["Username"] = username
 	m["Location"] = "http://" + request.Host + "/static/view/home.html"
-	r := Result{m}
+	r := Result{0, "ok", m}
+	j, _ := json.Marshal(r)
+	writer.Write(j)
+}
+
+func UserInfoHandler(writer http.ResponseWriter, request *http.Request) {
+	request.ParseForm()
+	username := request.Form.Get("username")
+	entity, err := db.LoadByUsername(username)
+	if err != nil {
+		writer.WriteHeader(http.StatusForbidden)
+		writer.Write([]byte("LoginError"))
+		return
+	}
+	m := map[string]interface{}{}
+	m["Username"] = entity.Username
+	m["SignupAt"] = entity.SignAt
+	r := Result{0, "ok", m}
 	j, _ := json.Marshal(r)
 	writer.Write(j)
 }
