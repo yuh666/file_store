@@ -47,3 +47,26 @@ create table tbl_token
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
   DEFAULT CHARSET = utf8mb4;
+
+
+  create table tbl_user_file (
+    id          int(11)     NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_name   varchar(64) NOT NULL             DEFAULT ''
+    COMMENT '用户名',
+    file_sha1   varchar(64) NOT NULL             DEFAULT ''
+    COMMENT '文件hash',
+    file_size   bigint(20)  NOT NULL             DEFAULT '0'
+    COMMENT '文件大小',
+    upload_at   datetime    NOT NULL             DEFAULT current_timestamp
+    COMMENT '上传时间',
+    last_update datetime    NOT NULL             DEFAULT current_timestamp
+    ON UPDATE CURRENT_TIMESTAMP
+    COMMENT '最近更新时间',
+    status      int(11)     NOT NULL             DEFAULT '0'
+    COMMENT '文件状态',
+    unique key uni_user_file(user_name, file_sha1),
+    key idx_status(status),
+    key idx_user_id (user_name)
+  )
+    ENGINE = InnoDB
+    DEFAULT charset = utf8mb4;
