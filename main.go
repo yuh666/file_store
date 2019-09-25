@@ -9,13 +9,13 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	//upload
-	http.HandleFunc("/file/upload", handler.UploadHandler)
+	http.HandleFunc("/file/upload", handler.HttpInterceptor(handler.UploadHandler))
 	//uploadSuc
 	http.HandleFunc("/file/upload/suc", handler.UploadSucHandler)
 	//query by hash
 	http.HandleFunc("/file/meta", handler.QueryFileMetaByHash)
 	//query limit
-	http.HandleFunc("/file/query", handler.QueryFileMetaLimit)
+	http.HandleFunc("/file/query", handler.HttpInterceptor(handler.QueryFileMetaLimit))
 	//download
 	http.HandleFunc("/file/download", handler.DownloadFileHandler)
 	//modify

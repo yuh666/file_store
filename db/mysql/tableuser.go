@@ -20,13 +20,13 @@ package mysql
 //key idx_user_id (user_name)
 //)
 
-func InsertFileUser(username, fileSha1 string, fileSize int) bool {
-	stmt, err := db.Prepare("insert into tbl_user_file(user_name,file_sha1,file_size) value (?,?,?)")
+func InsertFileUser(username, fileSha1, fileName string, fileSize int64) bool {
+	stmt, err := db.Prepare("insert into tbl_user_file(user_name,file_sha1,file_size,file_name) value (?,?,?,?)")
 	if err != nil {
 		return false
 	}
 	defer stmt.Close()
-	_, e := stmt.Exec(username, fileSha1, fileSize)
+	_, e := stmt.Exec(username, fileSha1, fileSize, fileName)
 	if e != nil {
 		return false
 	}
@@ -34,14 +34,16 @@ func InsertFileUser(username, fileSha1 string, fileSize int) bool {
 }
 
 type FileUser struct {
-	UserName string
-	FileSha1 string
-	FileSize int
-	UploadAt string
+	UserName    string
+	FileName    string
+	FileHash    string
+	FileSize    int
+	UploadAt    string
+	LastUpdated string
 }
 
 func LoadFileUserByUserName(username string) ([]*FileUser, error) {
-	stmt, err := db.Prepare("select user_name,file_sha1,file_size,upload_at from tbl_user_file where username=?")
+	stmt, err := db.Prepare("select user_name,file_sha1,file_size,upload_at,file_name,last_update from tbl_user_file where user_name=?")
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +55,7 @@ func LoadFileUserByUserName(username string) ([]*FileUser, error) {
 	fileusers := make([]*FileUser, 0)
 	for rows.Next() {
 		f := FileUser{}
-		rows.Scan(&f.UserName, &f.FileSha1, &f.FileSize, &f.UploadAt)
+		rows.Scan(&f.UserName, &f.FileHash, &f.FileSize, &f.UploadAt, &f.FileName, &f.LastUpdated)
 		fileusers = append(fileusers, &f)
 	}
 	return fileusers, nil

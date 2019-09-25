@@ -102,10 +102,11 @@
                 if (!body) {
                     return;
                 }
-                var data = JSON.parse(body);
-                if (!data || data.length <= 0) {
-                    return;
-                }
+                // var data = JSON.parse(body);
+                // if (!data || data.length <= 0) {
+                //     return;
+                // }
+                data = body;
 
                 for (var i = 0; i < data.length; i++) {
                     var x = document.getElementById('filetbl').insertRow();

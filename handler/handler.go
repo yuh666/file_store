@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"file_store/const"
+	"file_store/db/mysql"
 	"file_store/meta"
 	"file_store/util"
 	"io"
@@ -10,7 +11,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -71,6 +71,8 @@ func UploadHandler(writer http.ResponseWriter, request *http.Request) {
 		//meta.UploadFileMeta(fileMeta.FileSha1, &fileMeta)
 		_ = meta.UploadFileMetaDB(fileMeta.FileSha1, &fileMeta)
 		log.Println("文件元信息更新成功,sha1：" + fileMeta.FileSha1)
+		//写入用户文件表
+		mysql.InsertFileUser(request.Form.Get("username"), fileMeta.FileSha1, fileMeta.FileName, fileMeta.FileSize)
 		//redirect
 		http.Redirect(writer, request, "/file/upload/suc", http.StatusPermanentRedirect)
 	}
@@ -96,12 +98,8 @@ func QueryFileMetaByHash(writer http.ResponseWriter, request *http.Request) {
 
 func QueryFileMetaLimit(writer http.ResponseWriter, request *http.Request) {
 	request.ParseForm()
-	limit := 0
-	limit, err := strconv.Atoi(request.Form.Get("limit"))
-	if err != nil {
-		log.Println("limit " + request.Form.Get("limit") + " is illegal")
-	}
-	bytes, _ := json.Marshal(meta.QueryFileMetaLimit(limit))
+	entity, _ := mysql.LoadFileUserByUserName(request.Form.Get("username"))
+	bytes, _ := json.Marshal(entity)
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Write(bytes)
 }
