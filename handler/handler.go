@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"file_store/const"
+	"file_store/db"
 	"file_store/db/mysql"
 	"file_store/meta"
 	"file_store/util"
@@ -74,7 +75,7 @@ func UploadHandler(writer http.ResponseWriter, request *http.Request) {
 		//写入用户文件表
 		mysql.InsertFileUser(request.Form.Get("username"), fileMeta.FileSha1, fileMeta.FileName, fileMeta.FileSize)
 		//redirect
-		http.Redirect(writer, request, "/file/upload/suc", http.StatusPermanentRedirect)
+		http.Redirect(writer, request, "/static/view/home.html", http.StatusPermanentRedirect)
 	}
 }
 
@@ -155,6 +156,25 @@ func DeleteFileHandler(writer http.ResponseWriter, request *http.Request) {
 	meta.DeleteFileMetaByHash(fileHash)
 	log.Println("文件删除完成：" + fileMeta.FileName)
 	writer.WriteHeader(http.StatusOK)
+}
+
+func FastUpload(writer http.ResponseWriter, request *http.Request) {
+	request.ParseForm()
+	filename := request.Form.Get("filename")
+	filehash := request.Form.Get("filehash")
+	entity, err := db.GetFileMeta(filehash)
+	if err != nil {
+		ErrDeal(writer, err, "internal error")
+		return
+	}
+	if entity == nil {
+		writer.Write([]byte("秒传失败"))
+		return
+	}
+	//写入用户文件表
+	mysql.InsertFileUser(request.Form.Get("username"), filehash, filename, entity.FileSize.Int64)
+	writer.Write([]byte("成功"))
+	return
 }
 
 func ErrDeal(writer http.ResponseWriter, err error, msg string) {

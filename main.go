@@ -10,6 +10,7 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	//upload
 	http.HandleFunc("/file/upload", handler.HttpInterceptor(handler.UploadHandler))
+	http.HandleFunc("/file/fastupload", handler.HttpInterceptor(handler.FastUpload))
 	//uploadSuc
 	http.HandleFunc("/file/upload/suc", handler.UploadSucHandler)
 	//query by hash
