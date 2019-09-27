@@ -1,4 +1,6 @@
-package mysql
+package db
+
+import "file_store/db/mysql"
 
 //create table tbl_user_file (
 //id          int(11)     NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -21,7 +23,7 @@ package mysql
 //)
 
 func InsertFileUser(username, fileSha1, fileName string, fileSize int64) bool {
-	stmt, err := db.Prepare("insert into tbl_user_file(user_name,file_sha1,file_size,file_name) value (?,?,?,?)")
+	stmt, err := mysql.GetDB().Prepare("insert into tbl_user_file(user_name,file_sha1,file_size,file_name) value (?,?,?,?)")
 	if err != nil {
 		return false
 	}
@@ -43,7 +45,7 @@ type FileUser struct {
 }
 
 func LoadFileUserByUserName(username string) ([]*FileUser, error) {
-	stmt, err := db.Prepare("select user_name,file_sha1,file_size,upload_at,file_name,last_update from tbl_user_file where user_name=?")
+	stmt, err := mysql.GetDB().Prepare("select user_name,file_sha1,file_size,upload_at,file_name,last_update from tbl_user_file where user_name=?")
 	if err != nil {
 		return nil, err
 	}

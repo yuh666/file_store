@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"file_store/const"
 	"file_store/db"
-	"file_store/db/mysql"
 	"file_store/meta"
 	"file_store/util"
 	"io"
@@ -73,7 +72,7 @@ func UploadHandler(writer http.ResponseWriter, request *http.Request) {
 		_ = meta.UploadFileMetaDB(fileMeta.FileSha1, &fileMeta)
 		log.Println("文件元信息更新成功,sha1：" + fileMeta.FileSha1)
 		//写入用户文件表
-		mysql.InsertFileUser(request.Form.Get("username"), fileMeta.FileSha1, fileMeta.FileName, fileMeta.FileSize)
+		db.InsertFileUser(request.Form.Get("username"), fileMeta.FileSha1, fileMeta.FileName, fileMeta.FileSize)
 		//redirect
 		http.Redirect(writer, request, "/static/view/home.html", http.StatusPermanentRedirect)
 	}
@@ -99,7 +98,7 @@ func QueryFileMetaByHash(writer http.ResponseWriter, request *http.Request) {
 
 func QueryFileMetaLimit(writer http.ResponseWriter, request *http.Request) {
 	request.ParseForm()
-	entity, _ := mysql.LoadFileUserByUserName(request.Form.Get("username"))
+	entity, _ := db.LoadFileUserByUserName(request.Form.Get("username"))
 	bytes, _ := json.Marshal(entity)
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Write(bytes)
@@ -172,7 +171,7 @@ func FastUpload(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	//写入用户文件表
-	mysql.InsertFileUser(request.Form.Get("username"), filehash, filename, entity.FileSize.Int64)
+	db.InsertFileUser(request.Form.Get("username"), filehash, filename, entity.FileSize.Int64)
 	writer.Write([]byte("成功"))
 	return
 }
